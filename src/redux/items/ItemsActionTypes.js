@@ -5,3 +5,4 @@ export const ADD_TASKS = "ADD_TASKS";
 export const DELETE_TASK = "DELETE_TASK";
 export const EDIT_TASK = "EDIT_TASK";
 export const SELECTED_TASK = "SELECTED_TASK";
+export const ADD_USER = "ADD_USER";

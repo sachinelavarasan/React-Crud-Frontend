@@ -1,33 +1,47 @@
-import React, {  useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { addTask, editTask } from "../redux";
 
 function AllTasksContainer({ tasksData, addTask, editTask }) {
-  console.log(tasksData);
-  const [task, newTask] = useState("");
-  const [type, newType] = useState("");
-  const [description, newDescription] = useState("");
+  const [task, setTask] = useState("");
+  const [type, setType] = useState("");
+  const [description, setDescription] = useState("");
   const [id, setId] = useState("");
-  if (tasksData.edit) {
-    newTask(tasksData.task);
-    newType(tasksData.type);
-    newDescription(tasksData.describe);
-    setId(tasksData._id);
-  }
+
+  useEffect(() => {
+    if (tasksData.edit) {
+      setTask(tasksData.task.task);
+      setType(tasksData.task.type);
+      setDescription(tasksData.task.describe);
+      setId(tasksData.task._id);
+    }
+  }, [tasksData.edit]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let obj = { task: task, type: type, describe: description };
+    addTask(obj);
+    e.target.reset();
+    setTask("");
+    setType("");
+    setDescription("");
+  };
+  const handleEdit = (e) => {
+    e.preventDefault();
+    let obj = { task: task, type: type, describe: description };
+    editTask(obj, id);
+    setTask("");
+    setType("");
+    setDescription("");
+  };
+
   return (
     <div>
       <form
         onSubmit={(e) => {
-          e.preventDefault();
-          let obj = { task: task, type: type, describe: description };
-          console.log(obj);
-          addTask(obj);
-          e.target.reset();
-          newTask("");
-          newTask("");
-          newDescription("");
+          handleSubmit(e);
         }}
-        className="mt-5"
+        className="Details mt-5"
       >
         <div className="form-group">
           <label>Task Name</label>
@@ -39,24 +53,24 @@ function AllTasksContainer({ tasksData, addTask, editTask }) {
             name="task-name"
             value={task}
             onChange={(e) => {
-              newTask(e.target.value);
+              setTask(e.target.value);
             }}
           />
         </div>
 
         <div className="form-group">
           <label>Task Type</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter Task type"
-            required
-            name="task-type"
+          <select
+            className="form-select"
             value={type}
             onChange={(e) => {
-              newType(e.target.value);
+              setType(e.target.value);
             }}
-          />
+          >
+            <option value=" "> Select Task Type</option>
+            <option value="Billable">Billable</option>
+            <option value="NonBillable">NonBillable</option>
+          </select>
         </div>
         <div className="form-group">
           <label>Description</label>
@@ -66,23 +80,24 @@ function AllTasksContainer({ tasksData, addTask, editTask }) {
             placeholder="Description about task"
             required
             value={description}
-            onChange={(e) => newDescription(e.target.value)}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
-        <button type="submit" className="btn btn-success ml-2">
-          Add
-        </button>
-        <button
-          type="submit"
-          className="btn btn-success ml-2"
-          onClick={(e) => {
-            e.preventDefault();
-            let obj = { task: task, type: type, describe: description};
-            editTask(obj,id);
-          }}
-        >
-          Edit
-        </button>
+        {tasksData.edit ? (
+          <button
+            type="submit"
+            className="btn btn-info ml-2"
+            onClick={(e) => {
+              handleEdit(e);
+            }}
+          >
+            Edit
+          </button>
+        ) : (
+          <button type="submit" className="btn btn-success ml-2">
+            Add
+          </button>
+        )}
       </form>
     </div>
   );
@@ -94,11 +109,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addTask: (obj) => dispatch(addTask(obj)),
-    editTask: (data,id) => dispatch(editTask(data,id)),
-  };
+const mapDispatchToProps = {
+  addTask,
+  editTask,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AllTasksContainer);

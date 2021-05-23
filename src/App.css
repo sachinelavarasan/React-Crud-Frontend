@@ -1,38 +1,81 @@
 .App {
+    text-align: center;
+  margin-top: 20px;
+}
+.Details{
+  width: 400px;
+  height: 350px;
+  background-image: linear-gradient(to left,#ff0f7b,#f89b29);
+  border-radius: 50px;
+  padding: 25px;
+  filter: drop-shadow(10px 13px 5px #8d99ae);
+}
+.form-group{
+  padding: 10px;
+}
+
+label{
+  font-size: 20px;
+  font-weight: bolder;
+  font-family: 'Courier New', Courier, monospace;
+}
+.navigation{
+  margin: 10px;
+  border-radius: 5px;
+  filter: drop-shadow(3px 10px 5px #8d99ae);
+  z-index: -1;
+}
+.card{
+  filter: drop-shadow(3px 10px 5px #8d99ae);
+}
+
+.login{
+  height: 300px;
+  width: 700px;
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  margin: 40px;
+  z-index: 1;
+  filter: drop-shadow(6px 16px 5px #8d99ae);
+}
+.login-1{
+  width: 450px;
+  height: 100%;
+  background-color:#ffffff;
+  border-radius: 20px;
+}
+.login-2{
+  width:250px;
+  height: 100%;
+  padding: 30px;
+  background-image: linear-gradient(to right top, #3B01F3 , #9447e0);
+  border-radius: 10px;
+  text-align: center;
+  font-size: bolder;
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
+input{
+  z-index: 1;
+  filter: drop-shadow(1px 8px 10px #8d99ae);
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+input[type=password],input[type=email],input[type=text] {
+  background-color:white;
+  border-radius: 50px;
+  border: none;
+  color: black;
+ 
+}
+.signup{
+  height: 450px;
+  width: 400px;
+  text-align: center;
+  background-color:white;
+  box-shadow: 10px 20px 10px #8d99ae;
+  border-radius: 25px;
+  padding: 5px;
+}
+i{
+  padding:10px;
 }

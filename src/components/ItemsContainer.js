@@ -6,8 +6,7 @@ import ViewModal from "./ViewMoreModal";
 function ItemsContainer({ itemsData, getAllTasks, deleteTask, selectedTask }) {
   useEffect(() => {
     getAllTasks();
-  }, [getAllTasks]);
-
+  }, []);
   console.log(itemsData);
   return itemsData.loading ? (
     <h2>Loading</h2>
@@ -15,7 +14,6 @@ function ItemsContainer({ itemsData, getAllTasks, deleteTask, selectedTask }) {
     <h2>{itemsData.error}</h2>
   ) : (
     <div>
-      <h2>Blog List</h2>
       <div className="row">
         {itemsData &&
           itemsData.tasks &&
@@ -23,7 +21,7 @@ function ItemsContainer({ itemsData, getAllTasks, deleteTask, selectedTask }) {
             <div
               className="col-sm-4"
               key={item._id}
-              style={{ width: "14rem", height: "200px" }}
+              style={{ width: "14rem", height: "300px" }}
             >
               <div className="card">
                 <div>
@@ -31,17 +29,18 @@ function ItemsContainer({ itemsData, getAllTasks, deleteTask, selectedTask }) {
 
                   <p className="card-subtitle">{item.time}</p>
                 </div>
-                <div className="card-body">
-                  <p className="card-subtitle mb-2 text-muted">
+                <div className="card-body ">
+                  <p className="card-subtitle mb-2 text-muted text-wrap">
                     {item.task}
                     <div>{item.type}</div>
                   </p>
 
                   <div className="bg-warning rounded">
-                    <p className="card-title ">{item.describe}</p>
+                    <p className="card-title text-wrap">{item.describe}</p>
                   </div>
-                  <div>
+                  <div style={{ padding: "10px" }}>
                     <button
+                      style={{ marginRight: "6px" }}
                       type="button"
                       className="btn btn-info btn-sm"
                       onClick={(e) => {
@@ -59,9 +58,9 @@ function ItemsContainer({ itemsData, getAllTasks, deleteTask, selectedTask }) {
                     >
                       Delete
                     </button>
-                    <div>
-                      <ViewModal />
-                    </div>
+                  </div>
+                  <div>
+                    <ViewModal item={item} />
                   </div>
                 </div>
               </div>
@@ -78,12 +77,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getAllTasks: () => dispatch(getAllTasks()),
-    selectedTask: (id) => dispatch(selectedTask(id)),
-    deleteTask: (id) => dispatch(deleteTask(id)),
-  };
+const mapDispatchToProps = {
+  getAllTasks,
+  selectedTask,
+  deleteTask,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemsContainer);

@@ -44,22 +44,22 @@ const taskReducer = (state = initialState, action) => {
     case DELETE_TASK:
       return {
         loading: false,
-        tasks: state.tasks.filter((task) => task._id != action.payload),
+        tasks: state.tasks.filter((task) => task._id !== action.payload),
         error: "",
       };
     case EDIT_TASK:
       return {
         loading: false,
         tasks: state.tasks.map((task) =>
-          task._id == action.id ? action.payload : task
+          task._id === action.payload.id ? action.payload.data : task
         ),
         error: "",
       };
     case SELECTED_TASK:
       return {
         loading: false,
-        tasks: state.tasks,
-        task: state.tasks.find((task) => task._id == action.payload),
+        tasks: [...state.tasks],
+        task: state.tasks.find((task) => task._id === action.payload),
         edit: true,
         error: "",
       };

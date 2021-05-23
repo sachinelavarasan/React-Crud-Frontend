@@ -1,4 +1,6 @@
 import axios from "axios";
+import { toast } from "react-toastify";
+import swal from "sweetalert";
 import {
   FETCH_TASKS_REQUEST,
   FETCH_TASKS_SUCCESS,
@@ -11,13 +13,13 @@ import {
 
 export const getAllTasks = () => {
   return (dispatch) => {
+    const token = JSON.parse(localStorage.getItem("auth"));
     dispatch(fetchTasksRequest());
     axios
-      .get("http://localhost:4000/tasks/tasks")
+      .get(`http://localhost:4000/tasks/tasks/${token.user}`)
       .then((response) => {
         // response.data is the users
         const Tasks = response.data;
-
         dispatch(fetchTasksSuccess(Tasks));
       })
       .catch((error) => {
@@ -50,16 +52,25 @@ export const fetchTasksFailure = (error) => {
 export const addTask = (obj) => {
   return (dispatch) => {
     // dispatch(fetchItemsRequest());
+    const token = JSON.parse(localStorage.getItem("auth"));
+    obj.uid = token.user;
     axios
-      .post("http://localhost:4000/tasks/tasks", obj)
+      .post(`http://localhost:4000/tasks/tasks/`, obj)
       .then((response) => {
         // response.data is the users
         const Items = response.data;
-        console.log(Items);
-        dispatch(addTasksSuccess(obj));
+        toast.success("Task Added successfully", {
+          position: "top-center",
+          autoClose: 2000,
+        });
+        dispatch(addTasksSuccess(Items));
       })
       .catch((error) => {
         // error.message is the error message
+        toast.error(error.message, {
+          position: "top-center",
+          autoClose: 2000,
+        });
         dispatch(fetchTasksFailure(error.message));
       });
   };
@@ -72,18 +83,14 @@ export const addTasksSuccess = (items) => {
 };
 
 export const selectedTask = (id) => {
-  console.log(id);
   return (dispatch) => {
     // dispatch(fetchItemsRequest());
     axios
-      .get(`http://localhost:4000/tasks/tasks/${id}`)
+      .get(`http://localhost:4000/tasks/tasks/one/${id}`)
       .then((response) => {
-        // response.data is the users
-        console.log(response.data);
-        dispatch(selectedTasksSuccess(id));
+        dispatch(selectedTasksSuccess(response.data._id));
       })
       .catch((error) => {
-        // error.message is the error message
         dispatch(fetchTasksFailure(error.message));
       });
   };
@@ -97,19 +104,23 @@ export const selectedTasksSuccess = (id) => {
 };
 
 export const editTask = (data, id) => {
-  //console.log(id)
   return (dispatch) => {
-    // dispatch(fetchItemsRequest());
     axios
       .patch(`http://localhost:4000/tasks/tasks/${id}`, data)
       .then((response) => {
         // response.data is the users
         const Items = response.data;
-        console.log(Items);
-        dispatch(editItemsSuccess(data, id));
+        toast.info("Updated Successfully", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        dispatch(editItemsSuccess(Items, id));
       })
       .catch((error) => {
-        // error.message is the error message
+        toast.warning(error.message, {
+          position: "top-right",
+          autoClose: 2000,
+        });
         dispatch(fetchTasksFailure(error.message));
       });
   };
@@ -118,27 +129,40 @@ export const editTask = (data, id) => {
 export const editItemsSuccess = (data, id) => {
   return {
     type: EDIT_TASK,
-    payload: data,
-    id: id,
+    payload: { data: data, id: id },
   };
 };
 
 export const deleteTask = (id) => {
-  console.log(id);
   return (dispatch) => {
-    // dispatch(fetchItemsRequest());
-    axios
-      .delete(`http://localhost:4000/tasks/tasks/${id}`)
-      .then((response) => {
-        // response.data is the users
-        const Items = response.data;
-        console.log(Items);
-        dispatch(deleteItemsSuccess(id));
-      })
-      .catch((error) => {
-        // error.message is the error message
-        dispatch(fetchTasksFailure(error.message));
-      });
+    swal({
+      title: "Do You Want To delete the Task?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        axios
+          .delete(`http://localhost:4000/tasks/tasks/${id}`)
+          .then((response) => {
+            toast.warning("Deleted Successfully", {
+              position: "top-right",
+              autoClose: 2000,
+            });
+            dispatch(deleteItemsSuccess(id));
+          })
+          .catch((error) => {
+            // error.message is the error message
+            toast.error(error.message, {
+              position: "top-right",
+              autoClose: 2000,
+            });
+            dispatch(fetchTasksFailure(error.message));
+          });
+      } else {
+        swal("You Cancelling task deleting process!");
+      }
+    });
   };
 };
 
